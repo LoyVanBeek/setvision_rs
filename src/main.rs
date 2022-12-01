@@ -48,6 +48,10 @@ struct Card {
     shape: Shape,
 }
 
+fn find_set(cards: Vec<Card>) -> (Card, Card, Card) {
+    todo!();
+}
+
 fn main() {
     let a = Card{
         color: Color::Purple,
@@ -141,4 +145,7 @@ fn main() {
 
     let all_cards: Vec<Card> = vec![c1, c2, c3, c4, k1,k2,k3,k4,k5,k6,k7,k8,k9,k10,k11,k12];
     println!("Hello, Set: {:?}", all_cards);
+
+    let set = find_set(all_cards);
+    println!("Found a set: {:?}", set);
 }
