@@ -49,17 +49,17 @@ struct Card {
 }
 
 // TODO: Could be Traits?
-fn all_different_color(a: Card, b: Card, c: Card) -> bool 
+fn all_different_color(a: &Card, b: &Card, c: &Card) -> bool 
 {
     a.color != b.color && b.color != c.color && c.color != a.color
 }
 
-fn all_same_color(a: Card, b: Card, c: Card) -> bool 
+fn all_same_color(a: &Card, b: &Card, c: &Card) -> bool 
 {
     a.color == b.color && b.color == c.color && c.color == a.color
 }
 
-fn is_set(a: Card, b: Card, c: Card) -> bool 
+fn is_set(a: &Card, b: &Card, c: &Card) -> bool 
 {
     todo!();
 }
@@ -159,10 +159,10 @@ fn main() {
               count: Count::from_int(1),
     };
 
-    // let all_cards: Vec<Card> = vec![c1, c2, c3, c4, k1,k2,k3,k4,k5,k6,k7,k8,k9,k10,k11,k12];
-    // println!("Hello, Set: {:?}", all_cards);
+    println!("Do these have the same color? {:?}", all_same_color(&k1, &k2, &k3));
 
-    println!("Do these have the same color? {:?}", all_same_color(k1, k2, k3));
+    let all_cards: Vec<Card> = vec![c1, c2, c3, c4, k1,k2,k3,k4,k5,k6,k7,k8,k9,k10,k11,k12];
+    println!("Hello, Set: {:?}", all_cards);
 
     // let set = find_set(all_cards);
     // println!("Found a set: {:?}", set);
