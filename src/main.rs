@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, PartialEq)]
 enum Color {
     Red,
@@ -39,12 +41,37 @@ enum Shape {
     Squiggle,
 }
 
+impl fmt::Display for Shape {
+    // This trait requires `fmt` with this exact signature.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let character = match self {
+            Shape::Diamond => "♢",
+            Shape::Oval => "⬭",
+            Shape::Squiggle => "ᔓ",
+        };
+        write!(f, "{}", character)
+    }
+}
+
 #[derive(Debug)]
 struct Card {
     color: Color,
     count: Count,
     shading: Shading,
     shape: Shape,
+}
+
+impl fmt::Display for Card {
+    // This trait requires `fmt` with this exact signature.
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let prefix = match self.color {
+            Color::Red => "\\033[31",
+            Color::Green => "\\033[32",
+            Color::Purple => "\\033[35",
+        };
+        let postfix = "\\033[0m";
+        write!(f, "{}{}{}", prefix, self.shape, postfix)
+    }
 }
 
 // TODO: Could be Traits?
