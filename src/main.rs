@@ -1,5 +1,8 @@
 use std::fmt;
 
+extern crate ansi_colors;
+use ansi_colors::*;
+
 #[derive(Debug, PartialEq)]
 enum Color {
     Red,
@@ -45,9 +48,9 @@ impl fmt::Display for Shape {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let character = match self {
-            Shape::Diamond => "♢",
-            Shape::Oval => "⬭",
-            Shape::Squiggle => "ᔓ",
+            Shape::Diamond => " ♢ ",
+            Shape::Oval => " ⬭ ",
+            Shape::Squiggle => " ᔓ ",
         };
         write!(f, "{}", character)
     }
@@ -64,13 +67,15 @@ struct Card {
 impl fmt::Display for Card {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let shape_chr = format!("{}", self.shape);
+        let mut repr = ColouredStr::new(shape_chr.as_str());
+        repr.bold();
         let prefix = match self.color {
-            Color::Red => "\\033[31",
-            Color::Green => "\\033[32",
-            Color::Purple => "\\033[35",
+            Color::Red => repr.red(),
+            Color::Green => repr.green(),
+            Color::Purple => repr.magenta(),
         };
-        let postfix = "\\033[0m";
-        write!(f, "{}{}{}", prefix, self.shape, postfix)
+        write!(f, "[{repr}]")
     }
 }
 
