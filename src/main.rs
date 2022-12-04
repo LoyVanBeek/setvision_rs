@@ -179,6 +179,30 @@ fn main() {
         all_same_color(&k1, &k2, &k3)
     );
 
+    println!(
+        "Do these {:?}, {:?}, {:?} have a different color? {:?}",
+        &k1,
+        &k2,
+        &k3,
+        all_different_color(&k1, &k2, &k3)
+    );
+
+    println!(
+        "Do these {:?}, {:?}, {:?} have the same color? {:?}",
+        &k6,
+        &k7,
+        &k8,
+        all_same_color(&k6, &k7, &k8)
+    );
+
+    println!(
+        "Do these {:?}, {:?}, {:?} have a different color? {:?}",
+        &k6,
+        &k7,
+        &k8,
+        all_different_color(&k6, &k7, &k8)
+    );
+
     let all_cards: Vec<&Card> = vec![
         &c1, &c2, &c3, &c4, &k1, &k2, &k3, &k4, &k5, &k6, &k7, &k8, &k9, &k10, &k11, &k12,
     ];
