@@ -10,7 +10,7 @@ enum Color {
     Purple,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 enum Count {
     One,
     Two,
@@ -26,6 +26,16 @@ impl Count {
             _ => {
                 panic!("Cannot handle counts other than 1,2,3")
             }
+        }
+    }
+}
+
+impl Into<usize> for Count {
+    fn into(self) -> usize {
+        match self {
+            Count::One => 1,
+            Count::Two => 2,
+            Count::Three => 3,
         }
     }
 }
@@ -67,7 +77,7 @@ struct Card {
 impl fmt::Display for Card {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let shape_chr = format!("{}", self.shape);
+        let shape_chr = format!("{}", self.shape).repeat(self.count.into());
         let mut repr = ColouredStr::new(shape_chr.as_str());
         repr.bold();
         let prefix = match self.color {
@@ -140,13 +150,13 @@ fn main() {
         color: Color::Purple,
         shape: Shape::Squiggle,
         shading: Shading::Striped,
-        count: Count::from_int(1),
+        count: Count::from_int(2),
     };
     let k3 = Card {
         color: Color::Purple,
         shape: Shape::Oval,
         shading: Shading::Open,
-        count: Count::from_int(1),
+        count: Count::from_int(3),
     };
     let k4 = Card {
         color: Color::Green,
@@ -204,7 +214,7 @@ fn main() {
     };
 
     println!(
-        "Do these {:#?}, {:#?}, {:#?} have the same color? {:#?}",
+        "Do these {}, {}, {} have the same color? {:#?}",
         &k1,
         &k2,
         &k3,
