@@ -18,7 +18,7 @@ enum Count {
 }
 
 impl Count {
-    fn from_int(count: u8) -> Self {
+    const fn from_int(count: u8) -> Self {
         match count {
             1 => Count::One,
             2 => Count::Two,
@@ -111,119 +111,25 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
-    #[test]
-    fn test_same_color_true() {
-        let k1 = Card {
-            color: Color::Purple,
-            shape: Shape::Squiggle,
-            shading: Shading::Solid,
-            count: Count::from_int(1),
-        };
-        let k2 = Card {
-            color: Color::Purple,
-            shape: Shape::Squiggle,
-            shading: Shading::Striped,
-            count: Count::from_int(2),
-        };
-        let k3 = Card {
-            color: Color::Purple,
-            shape: Shape::Oval,
-            shading: Shading::Open,
-            count: Count::from_int(3),
-        };
-        assert_eq!(all_same_color(&k1, &k2, &k3), true);
-    }
-
-    #[test]
-    fn test_different_color_false() {
-        let k1 = Card {
-            color: Color::Purple,
-            shape: Shape::Squiggle,
-            shading: Shading::Solid,
-            count: Count::from_int(1),
-        };
-        let k2 = Card {
-            color: Color::Purple,
-            shape: Shape::Squiggle,
-            shading: Shading::Striped,
-            count: Count::from_int(2),
-        };
-        let k3 = Card {
-            color: Color::Purple,
-            shape: Shape::Oval,
-            shading: Shading::Open,
-            count: Count::from_int(3),
-        };
-        assert_eq!(all_different_color(&k1, &k2, &k3), false);
-    }
-
-    #[test]
-    fn test_same_color_false() {
-        let k6 = Card {
-            color: Color::Green,
-            shape: Shape::Diamond,
-            shading: Shading::Solid,
-            count: Count::from_int(2),
-        };
-        let k7 = Card {
-            color: Color::Purple,
-            shape: Shape::Diamond,
-            shading: Shading::Solid,
-            count: Count::from_int(3),
-        };
-        let k8 = Card {
-            color: Color::Red,
-            shape: Shape::Oval,
-            shading: Shading::Open,
-            count: Count::from_int(1),
-        };
-        assert_eq!(all_same_color(&k6, &k7, &k8), false);
-    }
-
-    #[test]
-    fn test_different_color_true() {
-        let k6 = Card {
-            color: Color::Green,
-            shape: Shape::Diamond,
-            shading: Shading::Solid,
-            count: Count::from_int(2),
-        };
-        let k7 = Card {
-            color: Color::Purple,
-            shape: Shape::Diamond,
-            shading: Shading::Solid,
-            count: Count::from_int(3),
-        };
-        let k8 = Card {
-            color: Color::Red,
-            shape: Shape::Oval,
-            shading: Shading::Open,
-            count: Count::from_int(1),
-        };
-        assert_eq!(all_different_color(&k6, &k7, &k8), true);
-    }
-}
-
-fn main() {
-    let c1 = Card {
+    const C1: Card = Card {
         color: Color::Green,
-        shape: Shape::Squiggle,
-        shading: Shading::Solid,
         count: Count::from_int(1),
+        shading: Shading::Solid,
+        shape: Shape::Squiggle,
     };
-    let c2 = Card {
+    const C2: Card = Card {
         color: Color::Green,
         shape: Shape::Oval,
         shading: Shading::Open,
         count: Count::from_int(2),
     };
-    let c3 = Card {
+    const C3: Card = Card {
         color: Color::Green,
         shape: Shape::Diamond,
         shading: Shading::Striped,
         count: Count::from_int(3),
     };
-    let c4 = Card {
+    const C4: Card = Card {
         color: Color::Green,
         shape: Shape::Diamond,
         shading: Shading::Solid,
@@ -231,79 +137,101 @@ fn main() {
     };
     // c1,2,3 together form a set, c1,2,4 do not
 
-    let k1 = Card {
+    const K1: Card = Card {
         color: Color::Purple,
         shape: Shape::Squiggle,
         shading: Shading::Solid,
         count: Count::from_int(1),
     };
-    let k2 = Card {
+    const K2: Card = Card {
         color: Color::Purple,
         shape: Shape::Squiggle,
         shading: Shading::Striped,
         count: Count::from_int(2),
     };
-    let k3 = Card {
+    const K3: Card = Card {
         color: Color::Purple,
         shape: Shape::Oval,
         shading: Shading::Open,
         count: Count::from_int(3),
     };
-    let k4 = Card {
+    const K4: Card = Card {
         color: Color::Green,
         shape: Shape::Squiggle,
         shading: Shading::Open,
         count: Count::from_int(1),
     };
-    let k5 = Card {
+    const K5: Card = Card {
         color: Color::Purple,
         shape: Shape::Squiggle,
         shading: Shading::Open,
         count: Count::from_int(3),
     };
-    let k6 = Card {
+    const K6: Card = Card {
         color: Color::Green,
         shape: Shape::Diamond,
         shading: Shading::Solid,
         count: Count::from_int(2),
     };
-    let k7 = Card {
+    const K7: Card = Card {
         color: Color::Purple,
         shape: Shape::Diamond,
         shading: Shading::Solid,
         count: Count::from_int(3),
     };
-    let k8 = Card {
+    const K8: Card = Card {
         color: Color::Red,
         shape: Shape::Oval,
         shading: Shading::Open,
         count: Count::from_int(1),
     };
-    let k9 = Card {
+    const K9: Card = Card {
         color: Color::Red,
         shape: Shape::Oval,
         shading: Shading::Open,
         count: Count::from_int(2),
     };
-    let k10 = Card {
+    const K10: Card = Card {
         color: Color::Red,
         shape: Shape::Diamond,
         shading: Shading::Open,
         count: Count::from_int(3),
     };
-    let k11 = Card {
+    const K11: Card = Card {
         color: Color::Green,
         shape: Shape::Oval,
         shading: Shading::Open,
         count: Count::from_int(2),
     };
-    let k12 = Card {
+    const K12: Card = Card {
         color: Color::Purple,
         shape: Shape::Diamond,
         shading: Shading::Solid,
         count: Count::from_int(1),
     };
 
+    #[test]
+    fn test_same_color_true() {
+        assert_eq!(all_same_color(&K1, &K2, &K3), true);
+    }
+
+    #[test]
+    fn test_different_color_false() {
+        assert_eq!(all_different_color(&K1, &K2, &K3), false);
+    }
+
+    #[test]
+    fn test_same_color_false() {
+        assert_eq!(all_same_color(&K6, &K7, &K8), false);
+    }
+
+    #[test]
+    fn test_different_color_true() {
+        assert_eq!(all_different_color(&K6, &K7, &K8), true);
+    }
+}
+
+fn main() {
 
     // let all_cards: Vec<&Card> = vec![
     //     &c1, &c2, &c3, &c4, &k1, &k2, &k3, &k4, &k5, &k6, &k7, &k8, &k9, &k10, &k11, &k12,
