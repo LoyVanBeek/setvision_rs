@@ -106,14 +106,105 @@ fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
     todo!();
 }
 
-fn main() {
-    let a = Card {
-        color: Color::Purple,
-        count: Count::One,
-        shading: Shading::Open,
-        shape: Shape::Diamond,
-    };
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
 
+    #[test]
+    fn test_same_color_true() {
+        let k1 = Card {
+            color: Color::Purple,
+            shape: Shape::Squiggle,
+            shading: Shading::Solid,
+            count: Count::from_int(1),
+        };
+        let k2 = Card {
+            color: Color::Purple,
+            shape: Shape::Squiggle,
+            shading: Shading::Striped,
+            count: Count::from_int(2),
+        };
+        let k3 = Card {
+            color: Color::Purple,
+            shape: Shape::Oval,
+            shading: Shading::Open,
+            count: Count::from_int(3),
+        };
+        assert_eq!(all_same_color(&k1, &k2, &k3), true);
+    }
+
+    #[test]
+    fn test_different_color_false() {
+        let k1 = Card {
+            color: Color::Purple,
+            shape: Shape::Squiggle,
+            shading: Shading::Solid,
+            count: Count::from_int(1),
+        };
+        let k2 = Card {
+            color: Color::Purple,
+            shape: Shape::Squiggle,
+            shading: Shading::Striped,
+            count: Count::from_int(2),
+        };
+        let k3 = Card {
+            color: Color::Purple,
+            shape: Shape::Oval,
+            shading: Shading::Open,
+            count: Count::from_int(3),
+        };
+        assert_eq!(all_different_color(&k1, &k2, &k3), false);
+    }
+
+    #[test]
+    fn test_same_color_false() {
+        let k6 = Card {
+            color: Color::Green,
+            shape: Shape::Diamond,
+            shading: Shading::Solid,
+            count: Count::from_int(2),
+        };
+        let k7 = Card {
+            color: Color::Purple,
+            shape: Shape::Diamond,
+            shading: Shading::Solid,
+            count: Count::from_int(3),
+        };
+        let k8 = Card {
+            color: Color::Red,
+            shape: Shape::Oval,
+            shading: Shading::Open,
+            count: Count::from_int(1),
+        };
+        assert_eq!(all_same_color(&k6, &k7, &k8), false);
+    }
+
+    #[test]
+    fn test_different_color_true() {
+        let k6 = Card {
+            color: Color::Green,
+            shape: Shape::Diamond,
+            shading: Shading::Solid,
+            count: Count::from_int(2),
+        };
+        let k7 = Card {
+            color: Color::Purple,
+            shape: Shape::Diamond,
+            shading: Shading::Solid,
+            count: Count::from_int(3),
+        };
+        let k8 = Card {
+            color: Color::Red,
+            shape: Shape::Oval,
+            shading: Shading::Open,
+            count: Count::from_int(1),
+        };
+        assert_eq!(all_different_color(&k6, &k7, &k8), true);
+    }
+}
+
+fn main() {
     let c1 = Card {
         color: Color::Green,
         shape: Shape::Squiggle,
@@ -213,43 +304,11 @@ fn main() {
         count: Count::from_int(1),
     };
 
-    println!(
-        "Do these {}, {}, {} have the same color? {:#?}",
-        &k1,
-        &k2,
-        &k3,
-        all_same_color(&k1, &k2, &k3)
-    );
 
-    println!(
-        "Do these {:#?}, {:#?}, {:#?} have a different color? {:#?}",
-        &k1,
-        &k2,
-        &k3,
-        all_different_color(&k1, &k2, &k3)
-    );
+    // let all_cards: Vec<&Card> = vec![
+    //     &c1, &c2, &c3, &c4, &k1, &k2, &k3, &k4, &k5, &k6, &k7, &k8, &k9, &k10, &k11, &k12,
+    // ];
 
-    println!(
-        "Do these {:#?}, {:#?}, {:#?} have the same color? {:#?}",
-        &k6,
-        &k7,
-        &k8,
-        all_same_color(&k6, &k7, &k8)
-    );
-
-    println!(
-        "Do these {:#?}, {:#?}, {:#?} have a different color? {:#?}",
-        &k6,
-        &k7,
-        &k8,
-        all_different_color(&k6, &k7, &k8)
-    );
-
-    let all_cards: Vec<&Card> = vec![
-        &c1, &c2, &c3, &c4, &k1, &k2, &k3, &k4, &k5, &k6, &k7, &k8, &k9, &k10, &k11, &k12,
-    ];
-    println!("Hello, Set: {:#?}", all_cards);
-
-    let set = find_set(all_cards);
-    println!("Found a set: {:#?}", set);
+    // let set = find_set(all_cards);
+    // // println!("Found a set: {:#?}", set);
 }
