@@ -89,7 +89,6 @@ impl fmt::Display for Card {
     }
 }
 
-// TODO: Could be Traits?
 fn all_different_color(a: &Card, b: &Card, c: &Card) -> bool {
     a.color != b.color && b.color != c.color && c.color != a.color
 }
@@ -98,8 +97,37 @@ fn all_same_color(a: &Card, b: &Card, c: &Card) -> bool {
     a.color == b.color && b.color == c.color && c.color == a.color
 }
 
+fn all_different_shape(a: &Card, b: &Card, c: &Card) -> bool {
+    a.shape != b.shape && b.shape != c.shape && c.shape != a.shape
+}
+
+fn all_same_shape(a: &Card, b: &Card, c: &Card) -> bool {
+    a.shape == b.shape && b.shape == c.shape && c.shape == a.shape
+}
+
+fn all_different_count(a: &Card, b: &Card, c: &Card) -> bool {
+    a.count != b.count && b.count != c.count && c.count != a.count
+}
+
+fn all_same_count(a: &Card, b: &Card, c: &Card) -> bool {
+    a.count == b.count && b.count == c.count && c.count == a.count
+}
+
+fn all_different_shading(a: &Card, b: &Card, c: &Card) -> bool {
+    a.shading != b.shading && b.shading != c.shading && c.shading != a.shading
+}
+
+fn all_same_shading(a: &Card, b: &Card, c: &Card) -> bool {
+    a.shading == b.shading && b.shading == c.shading && c.shading == a.shading
+}
+
 fn is_set(a: &Card, b: &Card, c: &Card) -> bool {
-    todo!();
+    let color_same_or_diff = all_same_color(a, b, c) || all_different_color(a, b, c);
+    let shape_same_or_diff = all_same_shape(a, b, c) || all_different_shape(a, b, c);
+    let count_same_or_diff = all_same_count(a, b, c) || all_different_count(a, b, c);
+    let shading_same_or_diff = all_same_shading(a, b, c) || all_different_shading(a, b, c);
+    
+    color_same_or_diff && shape_same_or_diff && count_same_or_diff && shading_same_or_diff
 }
 
 fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
@@ -111,6 +139,7 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
+    // c1,2,3 together form a set, c1,2,4 do not
     const C1: Card = Card {
         color: Color::Green,
         count: Count::from_int(1),
@@ -135,8 +164,6 @@ mod tests {
         shading: Shading::Solid,
         count: Count::from_int(3),
     };
-    // c1,2,3 together form a set, c1,2,4 do not
-
     const K1: Card = Card {
         color: Color::Purple,
         shape: Shape::Squiggle,
@@ -229,14 +256,25 @@ mod tests {
     fn test_different_color_true() {
         assert_eq!(all_different_color(&K6, &K7, &K8), true);
     }
+
+    #[test]
+    fn test_find_all_sets_1() {
+        let all_cards: Vec<&Card> = vec![
+            &C1, &C2, &C3, &C4, &K1, &K2, &K3, &K4, &K5, &K6, &K7, &K8, &K9, &K10, &K11, &K12,
+        ];
+    
+        let set = find_set(all_cards);
+        println!("Found a set: {:#?}", set);
+    }
+
+    #[test]
+    fn test_is_set_1()
+    {
+        assert_eq!(is_set(&C1, &C2, &C3), true);
+    }
 }
 
 fn main() {
 
-    // let all_cards: Vec<&Card> = vec![
-    //     &c1, &c2, &c3, &c4, &k1, &k2, &k3, &k4, &k5, &k6, &k7, &k8, &k9, &k10, &k11, &k12,
-    // ];
 
-    // let set = find_set(all_cards);
-    // // println!("Found a set: {:#?}", set);
 }
