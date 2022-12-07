@@ -58,9 +58,9 @@ impl fmt::Display for Shape {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let character = match self {
-            Shape::Diamond => " ♢ ",
-            Shape::Oval => " ⬭ ",
-            Shape::Squiggle => " ᔓ ",
+            Shape::Diamond => "^",
+            Shape::Oval => "0",
+            Shape::Squiggle => "~",
         };
         write!(f, "{}", character)
     }
