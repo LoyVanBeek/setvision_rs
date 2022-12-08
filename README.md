@@ -1,2 +1,2 @@
-# setvsion_rs
+# setvision_rs
 Rust port of SetVision project
