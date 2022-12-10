@@ -2,15 +2,16 @@ use std::fmt;
 
 extern crate ansi_colors;
 use ansi_colors::*;
+use combinations::Combinations;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum Color {
     Red,
     Green,
     Purple,
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Count {
     One,
     Two,
@@ -40,14 +41,14 @@ impl Into<usize> for Count {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum Shading {
     Open,
     Solid,
     Striped,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum Shape {
     Diamond,
     Oval,
@@ -66,7 +67,7 @@ impl fmt::Display for Shape {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 struct Card {
     color: Color,
     count: Count,
@@ -126,12 +127,17 @@ fn is_set(a: &Card, b: &Card, c: &Card) -> bool {
     let shape_same_or_diff = all_same_shape(a, b, c) || all_different_shape(a, b, c);
     let count_same_or_diff = all_same_count(a, b, c) || all_different_count(a, b, c);
     let shading_same_or_diff = all_same_shading(a, b, c) || all_different_shading(a, b, c);
-    
+
     color_same_or_diff && shape_same_or_diff && count_same_or_diff && shading_same_or_diff
 }
 
 fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
-    todo!();
+    for triplet in combinations::Combinations::new(cards, 3) {
+        if is_set(triplet[0], triplet[1], triplet[2]) {
+            return (triplet[0], triplet[1], triplet[2]);
+        }
+    }
+    todo!()
 }
 
 #[cfg(test)]
@@ -262,19 +268,16 @@ mod tests {
         let all_cards: Vec<&Card> = vec![
             &C1, &C2, &C3, &C4, &K1, &K2, &K3, &K4, &K5, &K6, &K7, &K8, &K9, &K10, &K11, &K12,
         ];
-    
+
         let set = find_set(all_cards);
         println!("Found a set: {:#?}", set);
+        // assert!(set, (&C1, &C2, &C3))
     }
 
     #[test]
-    fn test_is_set_1()
-    {
+    fn test_is_set_1() {
         assert_eq!(is_set(&C1, &C2, &C3), true);
     }
 }
 
-fn main() {
-
-
-}
+fn main() {}
