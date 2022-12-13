@@ -2,7 +2,7 @@ use std::fmt;
 
 extern crate ansi_colors;
 use ansi_colors::*;
-use combinations::Combinations;
+
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum Color {
@@ -81,7 +81,7 @@ impl fmt::Display for Card {
         let shape_chr = format!("{}", self.shape).repeat(self.count.into());
         let mut repr = ColouredStr::new(shape_chr.as_str());
         repr.bold();
-        let prefix = match self.color {
+        match self.color {
             Color::Red => repr.red(),
             Color::Green => repr.green(),
             Color::Purple => repr.magenta(),
