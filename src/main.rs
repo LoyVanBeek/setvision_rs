@@ -3,6 +3,7 @@ use std::{fmt, vec};
 extern crate ansi_colors;
 use ansi_colors::*;
 use std::slice::Iter;
+use fastrand;
 
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -327,4 +328,11 @@ mod tests {
     }
 }
 
-fn main() {}
+fn main() {
+    let mut all_cards = generate_all_cards();
+    fastrand::shuffle(&mut all_cards);
+
+    let card_iterator = all_cards.into_iter();
+    let table = card_iterator.take(12);
+    // let set = find_set(table);
+}
