@@ -1,7 +1,8 @@
-use std::fmt;
+use std::{fmt, vec};
 
 extern crate ansi_colors;
 use ansi_colors::*;
+use std::slice::Iter;
 
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
@@ -9,6 +10,13 @@ enum Color {
     Red,
     Green,
     Purple,
+}
+
+impl Color {
+    pub fn iterator() -> Iter<'static, Color> {
+        static COLORS: [Color; 3] = [Color::Red, Color::Green, Color::Purple];
+        COLORS.iter()
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
@@ -29,6 +37,11 @@ impl Count {
             }
         }
     }
+
+    pub fn iterator() -> Iter<'static, Count> {
+        static COUNTS: [Count; 3] = [Count::One, Count::Two, Count::Three];
+        COUNTS.iter()
+    }
 }
 
 impl Into<usize> for Count {
@@ -48,6 +61,13 @@ enum Shading {
     Striped,
 }
 
+impl Shading {
+    pub fn iterator() -> Iter<'static, Shading> {
+        static SHADINGS: [Shading; 3] = [Shading::Open, Shading::Solid, Shading::Striped];
+        SHADINGS.iter()
+    }
+}
+
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
 enum Shape {
     Diamond,
@@ -64,6 +84,13 @@ impl fmt::Display for Shape {
             Shape::Squiggle => "~",
         };
         write!(f, "{}", character)
+    }
+}
+
+impl Shape {
+    pub fn iterator() -> Iter<'static, Shape> {
+        static SHAPES: [Shape; 3] = [Shape::Diamond, Shape::Oval, Shape::Squiggle];
+        SHAPES.iter()
     }
 }
 
