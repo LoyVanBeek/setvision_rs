@@ -5,7 +5,7 @@ use ansi_colors::*;
 use std::slice::Iter;
 
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Color {
     Red,
     Green,
@@ -54,7 +54,7 @@ impl Into<usize> for Count {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Shading {
     Open,
     Solid,
@@ -68,7 +68,7 @@ impl Shading {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Shape {
     Diamond,
     Oval,
@@ -173,17 +173,11 @@ fn generate_all_cards() -> Vec<Card> {
         for _count in Count::iterator() {
             for _shading in Shading::iterator() {
                 for _shape in Shape::iterator() {
-                    // let card = &Card {
-                    //     color: _color,
-                    //     count: _count,
-                    //     shading: _shading,
-                    //     shape: _shape,
-                    // };
                     let card = Card {
-                        color: Color::Green,
-                        count: Count::from_int(1),
-                        shading: Shading::Solid,
-                        shape: Shape::Squiggle,
+                        color: *_color,
+                        count: *_count,
+                        shading: *_shading,
+                        shape: *_shape,
                     };
                     all_cards.push(card);
                 }
