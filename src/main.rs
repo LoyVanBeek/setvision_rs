@@ -167,6 +167,32 @@ fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
     todo!()
 }
 
+fn generate_all_cards() -> Vec<Card> {
+    let mut all_cards: Vec<Card> = vec![];
+    for _color in Color::iterator() {
+        for _count in Count::iterator() {
+            for _shading in Shading::iterator() {
+                for _shape in Shape::iterator() {
+                    // let card = &Card {
+                    //     color: _color,
+                    //     count: _count,
+                    //     shading: _shading,
+                    //     shape: _shape,
+                    // };
+                    let card = Card {
+                        color: Color::Green,
+                        count: Count::from_int(1),
+                        shading: Shading::Solid,
+                        shape: Shape::Squiggle,
+                    };
+                    all_cards.push(card);
+                }
+            }
+        }
+    }
+    all_cards
+}
+
 #[cfg(test)]
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
