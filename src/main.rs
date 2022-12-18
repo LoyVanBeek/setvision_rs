@@ -3,7 +3,8 @@ use std::{fmt, vec};
 extern crate ansi_colors;
 use ansi_colors::*;
 use std::slice::Iter;
-
+use rand::seq::SliceRandom;
+use rand::thread_rng;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 enum Color {
@@ -167,8 +168,8 @@ fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
     todo!()
 }
 
-fn generate_all_cards() -> Vec<Card> {
-    let mut all_cards: Vec<Card> = vec![];
+fn generate_all_cards() -> Vec<Box<Card>> {
+    let mut all_cards: Vec<Box<Card>> = vec![];
     for _color in Color::iterator() {
         for _count in Count::iterator() {
             for _shading in Shading::iterator() {
@@ -179,7 +180,7 @@ fn generate_all_cards() -> Vec<Card> {
                         shading: *_shading,
                         shape: *_shape,
                     };
-                    all_cards.push(card);
+                    all_cards.push(Box::new(card));
                 }
             }
         }
@@ -328,15 +329,22 @@ mod tests {
 }
 
 fn main() {
-    let mut all_cards = generate_all_cards();
-    // fastrand::shuffle(&mut all_cards);
+    let all_cards = generate_all_cards();
+    let mut all_card_refs: Vec<&Card> = all_cards.iter().map(Box::as_ref).collect();
 
-    // let card_iterator = all_cards.into_iter();
-    // let table: Vec<&Card> = card_iterator.take(12).collect();
-    // println!("{}, {}, {}", table[0], table[1], table[2]);
-    // println!("{}, {}, {}", table[3], table[4], table[5]);
-    // println!("{}, {}, {}", table[6], table[7], table[8]);
-    // println!("{}, {}, {}", table[9], table[10], table[11]);
-    // let set = find_set(table);
-    // println!("{}, {}, {}", set.0, set.1, set.2);
+    // let mut all_as_ref = all_cards.map(|c| -> {&Card c});
+
+    let mut rng = thread_rng();
+    let (table, mut _remaining_unshuffled) = all_card_refs.partial_shuffle(&mut rng, 12);
+
+    println!("These are the cards on the table:");
+    println!("{}, {}, {}", table[0], table[1], table[2]);
+    println!("{}, {}, {}", table[3], table[4], table[5]);
+    println!("{}, {}, {}", table[6], table[7], table[8]);
+    println!("{}, {}, {}", table[9], table[10], table[11]);
+
+    let set = find_set(table.to_vec());
+
+    println!("These from a set:");
+    println!("{}, {}, {}", set.0, set.1, set.2);
 }
