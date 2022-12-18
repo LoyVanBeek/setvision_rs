@@ -28,6 +28,7 @@ enum Count {
 }
 
 impl Count {
+    #[allow(dead_code)]
     const fn from_int(count: u8) -> Self {
         match count {
             1 => Count::One,
