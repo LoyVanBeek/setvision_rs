@@ -189,17 +189,6 @@ fn generate_all_cards() -> Vec<Card> {
     all_cards
 }
 
-struct CardCollection {
-    cards: Vec<Card>,
-}
-
-impl Default for CardCollection {
-
-    fn default() -> Self {
-        Self { cards: generate_all_cards() }
-    }
-}
-
 
 #[cfg(test)]
 mod tests {
@@ -342,10 +331,8 @@ mod tests {
 }
 
 fn main() {
-    let cards = CardCollection::default();
-    let mut all_card_refs: Vec<&Card> = cards.cards.iter().collect();
-
-    // let mut all_as_ref = all_cards.map(|c| -> {&Card c});
+    let cards = generate_all_cards();
+    let mut all_card_refs: Vec<&Card> = cards.iter().collect();
 
     let mut rng = thread_rng();
     let (table, mut _remaining_unshuffled) = all_card_refs.partial_shuffle(&mut rng, 12);
