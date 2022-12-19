@@ -169,28 +169,34 @@ fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
     todo!()
 }
 
-#[derive(Default)]
+fn generate_all_cards() -> Vec<Card> {
+    let mut all_cards: Vec<Card> = vec![];
+    for _color in Color::iterator() {
+        for _count in Count::iterator() {
+            for _shading in Shading::iterator() {
+                for _shape in Shape::iterator() {
+                    let card = Card {
+                        color: *_color,
+                        count: *_count,
+                        shading: *_shading,
+                        shape: *_shape,
+                    };
+                    all_cards.push(card);
+                }
+            }
+        }
+    }
+    all_cards
+}
+
 struct CardCollection {
     cards: Vec<Card>,
 }
 
-impl CardCollection {
-    fn generate_all_cards(&mut self) -> () {
-        for _color in Color::iterator() {
-            for _count in Count::iterator() {
-                for _shading in Shading::iterator() {
-                    for _shape in Shape::iterator() {
-                        let card = Card {
-                            color: *_color,
-                            count: *_count,
-                            shading: *_shading,
-                            shape: *_shape,
-                        };
-                        self.cards.push(card);
-                    }
-                }
-            }
-        }
+impl Default for CardCollection {
+
+    fn default() -> Self {
+        Self { cards: generate_all_cards() }
     }
 }
 
@@ -336,8 +342,7 @@ mod tests {
 }
 
 fn main() {
-    let mut cards = CardCollection::default();
-    cards.generate_all_cards();
+    let cards = CardCollection::default();
     let mut all_card_refs: Vec<&Card> = cards.cards.iter().collect();
 
     // let mut all_as_ref = all_cards.map(|c| -> {&Card c});
