@@ -104,6 +104,7 @@ struct Card {
     shape: Shape,
 }
 
+
 impl fmt::Display for Card {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -119,54 +120,67 @@ impl fmt::Display for Card {
     }
 }
 
-fn all_different_color(a: &Card, b: &Card, c: &Card) -> bool {
-    a.color != b.color && b.color != c.color && c.color != a.color
+#[derive(Debug)]
+struct Triple<'a>(&'a Card, &'a Card, &'a Card);
+
+impl Triple<'_> {
+    fn all_different_color(&self) -> bool {
+        self.0.color != self.1.color && self.1.color != self.2.color && self.2.color != self.0.color
+    }
+
+    fn all_same_color(&self) -> bool {
+        self.0.color == self.1.color && self.1.color == self.2.color && self.2.color == self.0.color
+    }
+
+    fn all_different_shape(&self) -> bool {
+        self.0.shape != self.1.shape && self.1.shape != self.2.shape && self.2.shape != self.0.shape
+    }
+
+    fn all_same_shape(&self) -> bool {
+        self.0.shape == self.1.shape && self.1.shape == self.2.shape && self.2.shape == self.0.shape
+    }
+
+    fn all_different_count(&self) -> bool {
+        self.0.count != self.1.count && self.1.count != self.2.count && self.2.count != self.0.count
+    }
+
+    fn all_same_count(&self) -> bool {
+        self.0.count == self.1.count && self.1.count == self.2.count && self.2.count == self.0.count
+    }
+
+    fn all_different_shading(&self) -> bool {
+        self.0.shading != self.1.shading && self.1.shading != self.2.shading && self.2.shading != self.0.shading
+    }
+
+    fn all_same_shading(&self) -> bool {
+        self.0.shading == self.1.shading && self.1.shading == self.2.shading && self.2.shading == self.0.shading
+    }
+
+    fn is_set(&self) -> bool {
+        let color_same_or_diff = self.all_same_color() || self.all_different_color();
+        let shape_same_or_diff = self.all_same_shape() || self.all_different_shape();
+        let count_same_or_diff = self.all_same_count() || self.all_different_count();
+        let shading_same_or_diff = self.all_same_shading() || self.all_different_shading();
+
+        color_same_or_diff && shape_same_or_diff && count_same_or_diff && shading_same_or_diff
+    }
 }
 
-fn all_same_color(a: &Card, b: &Card, c: &Card) -> bool {
-    a.color == b.color && b.color == c.color && c.color == a.color
-}
+#[derive(Debug, Clone)]
+struct SetError;
 
-fn all_different_shape(a: &Card, b: &Card, c: &Card) -> bool {
-    a.shape != b.shape && b.shape != c.shape && c.shape != a.shape
-}
-
-fn all_same_shape(a: &Card, b: &Card, c: &Card) -> bool {
-    a.shape == b.shape && b.shape == c.shape && c.shape == a.shape
-}
-
-fn all_different_count(a: &Card, b: &Card, c: &Card) -> bool {
-    a.count != b.count && b.count != c.count && c.count != a.count
-}
-
-fn all_same_count(a: &Card, b: &Card, c: &Card) -> bool {
-    a.count == b.count && b.count == c.count && c.count == a.count
-}
-
-fn all_different_shading(a: &Card, b: &Card, c: &Card) -> bool {
-    a.shading != b.shading && b.shading != c.shading && c.shading != a.shading
-}
-
-fn all_same_shading(a: &Card, b: &Card, c: &Card) -> bool {
-    a.shading == b.shading && b.shading == c.shading && c.shading == a.shading
-}
-
-fn is_set(a: &Card, b: &Card, c: &Card) -> bool {
-    let color_same_or_diff = all_same_color(a, b, c) || all_different_color(a, b, c);
-    let shape_same_or_diff = all_same_shape(a, b, c) || all_different_shape(a, b, c);
-    let count_same_or_diff = all_same_count(a, b, c) || all_different_count(a, b, c);
-    let shading_same_or_diff = all_same_shading(a, b, c) || all_different_shading(a, b, c);
-
-    color_same_or_diff && shape_same_or_diff && count_same_or_diff && shading_same_or_diff
-}
-
-fn find_set(cards: Vec<&Card>) -> (&Card, &Card, &Card) {
-    for triplet in combinations::Combinations::new(cards, 3) {
-        if is_set(triplet[0], triplet[1], triplet[2]) {
-            return (triplet[0], triplet[1], triplet[2]);
+fn find_set(cards: Vec<&Card>) -> Result<Triple, SetError> {
+    for subset in combinations::Combinations::new(cards, 3) {
+        let triple = Triple(
+            subset[0],
+            subset[1], 
+            subset[2],
+        );
+        if triple.is_set() {
+            return Ok(triple);
         }
     }
-    todo!()
+    return Err(SetError);
 }
 
 fn generate_all_cards() -> Vec<Card> {
@@ -295,22 +309,22 @@ mod tests {
 
     #[test]
     fn test_same_color_true() {
-        assert_eq!(all_same_color(&K1, &K2, &K3), true);
+        assert_eq!(Triple(&K1, &K2, &K3).all_same_color(), true);
     }
 
     #[test]
     fn test_different_color_false() {
-        assert_eq!(all_different_color(&K1, &K2, &K3), false);
+        assert_eq!(Triple(&K1, &K2, &K3).all_different_color(), false);
     }
 
     #[test]
     fn test_same_color_false() {
-        assert_eq!(all_same_color(&K6, &K7, &K8), false);
+        assert_eq!(Triple(&K6, &K7, &K8).all_same_color(), false);
     }
 
     #[test]
     fn test_different_color_true() {
-        assert_eq!(all_different_color(&K6, &K7, &K8), true);
+        assert_eq!(Triple(&K6, &K7, &K8).all_different_color(), true);
     }
 
     #[test]
@@ -321,12 +335,11 @@ mod tests {
 
         let set = find_set(all_cards);
         println!("Found a set: {:#?}", set);
-        // assert!(set, (&C1, &C2, &C3))
     }
 
     #[test]
     fn test_is_set_1() {
-        assert_eq!(is_set(&C1, &C2, &C3), true);
+        assert_eq!(Triple(&C1, &C2, &C3).is_set(), true);
     }
 }
 
@@ -343,8 +356,12 @@ fn main() {
     println!("{}, {}, {}", table[6], table[7], table[8]);
     println!("{}, {}, {}", table[9], table[10], table[11]);
 
-    let set = find_set(table.to_vec());
-
-    println!("These from a set:");
-    println!("{}, {}, {}", set.0, set.1, set.2);
+    let set_result = find_set(table.to_vec());
+    match set_result {
+        Ok(set) => {
+            println!("These from a set:");
+            println!("{}, {}, {}", set.0, set.1, set.2);
+        },
+        Err(_) => println!("No set found"),
+    }
 }
