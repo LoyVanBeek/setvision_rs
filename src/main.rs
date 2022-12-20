@@ -183,6 +183,21 @@ fn find_set(cards: Vec<&Card>) -> Result<Triple, SetError> {
     return Err(SetError);
 }
 
+fn find_all_sets(cards: Vec<&Card>) -> Vec<Triple> {
+    let mut sets: Vec<Triple> = vec![];
+    for subset in combinations::Combinations::new(cards, 3) {
+        let triple = Triple(
+            subset[0],
+            subset[1],
+            subset[2],
+        );
+        if triple.is_set() {
+            sets.push(triple);
+        }
+    }
+    sets
+}
+
 fn generate_all_cards() -> Vec<Card> {
     let mut all_cards: Vec<Card> = vec![];
     for _color in Color::iterator() {
@@ -363,5 +378,10 @@ fn main() {
             println!("{}, {}, {}", set.0, set.1, set.2);
         },
         Err(_) => println!("No set found"),
+    }
+
+    let sets = find_all_sets(table.to_vec());
+    for set in sets {
+        println!("{}, {}, {}", set.0, set.1, set.2);
     }
 }
