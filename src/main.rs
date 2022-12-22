@@ -400,6 +400,8 @@ fn main() {
         Err(_) => println!("No set found"),
     }
 
+    println!("These are all the sets in this table:");
+    println!("-------------------------------------");
     let sets = find_all_sets(table.to_vec());
     for set in sets {
         println!("{}, {}, {}", set.0, set.1, set.2);
