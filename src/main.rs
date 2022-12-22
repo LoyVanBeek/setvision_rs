@@ -5,8 +5,11 @@ use ansi_colors::*;
 use std::slice::Iter;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
+// use rand::SeedableRng;
+// use rand_chacha::ChaCha8Rng;
+use std::collections::HashSet;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum Color {
     Red,
     Green,
@@ -20,7 +23,7 @@ impl Color {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum Count {
     One,
     Two,
@@ -56,7 +59,7 @@ impl Into<usize> for Count {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum Shading {
     Open,
     Solid,
@@ -70,7 +73,7 @@ impl Shading {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum Shape {
     Diamond,
     Oval,
@@ -96,7 +99,7 @@ impl Shape {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Card {
     color: Color,
     count: Count,
@@ -376,16 +379,26 @@ mod tests {
     fn test_is_set_1() {
         assert_eq!(Triple(&C1, &C2, &C3).is_set(), true);
     }
+
+    #[test]
+    fn test_generate_all_cards() {
+        let cards = generate_all_cards();
+        assert_eq!(81, cards.len());
+    }
 }
 
 fn main() {
     let cards = generate_all_cards();
-    let mut all_card_refs: Vec<&Card> = cards.iter().collect();
+    // let all_card_refs: Vec<&Card> = cards.iter().collect();
 
-    let mut rng = thread_rng();
-    let (table, mut _remaining_unshuffled) = all_card_refs.partial_shuffle(&mut rng, 12);
+    let mut rng = thread_rng();//ChaCha8Rng::seed_from_u64(9);//
+    let table: Vec<&Card> = cards.choose_multiple(&mut rng, 12).collect();
 
-    println!("These are the cards on the table:");
+    let mut table_set = HashSet::with_capacity(12);
+    for c in table.iter() {
+        table_set.insert(*c);
+    }
+    println!("There are {} unique cards on the table", table_set.len());
     println!("{}, {}, {}", table[0], table[1], table[2]);
     println!("{}, {}, {}", table[3], table[4], table[5]);
     println!("{}, {}, {}", table[6], table[7], table[8]);
@@ -394,7 +407,7 @@ fn main() {
     let set_result = find_set(table.to_vec());
     match set_result {
         Ok(set) => {
-            println!("These from a set:");
+            println!("These form a set:");
             println!("{}, {}, {}", set.0, set.1, set.2);
         },
         Err(_) => println!("No set found"),

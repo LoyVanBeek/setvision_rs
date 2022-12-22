@@ -80,6 +80,7 @@ dependencies = [
  "ansi-colors",
  "combinations",
  "rand",
+ "rand_chacha",
 ]
 
 [[package]]
