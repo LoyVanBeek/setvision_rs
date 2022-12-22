@@ -120,6 +120,19 @@ impl fmt::Display for Card {
     }
 }
 
+struct HighlightedCard<'a> {
+    card: &'a Card,
+}
+
+impl fmt::Display for HighlightedCard<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let card_repr = format!("{}", self.card);
+        let mut repr = ColouredStr::new(card_repr.as_str());
+        repr.back_white();
+        write!(f, "[{repr}]")
+    }
+}
+
 #[derive(Debug)]
 struct Triple<'a>(&'a Card, &'a Card, &'a Card);
 
@@ -164,6 +177,13 @@ impl Triple<'_> {
 
         color_same_or_diff && shape_same_or_diff && count_same_or_diff && shading_same_or_diff
     }
+}
+
+#[derive(Debug)]
+struct Table<'a>(Vec<&'a Card>);
+
+impl Table<'_> {
+    
 }
 
 #[derive(Debug, Clone)]
@@ -375,13 +395,19 @@ fn main() {
     match set_result {
         Ok(set) => {
             println!("These from a set:");
-            println!("{}, {}, {}", set.0, set.1, set.2);
+            println!("{}, {}, {}", 
+                HighlightedCard{card: set.0},
+                HighlightedCard{card: set.1},
+                HighlightedCard{card: set.2});
         },
         Err(_) => println!("No set found"),
     }
 
     let sets = find_all_sets(table.to_vec());
     for set in sets {
-        println!("{}, {}, {}", set.0, set.1, set.2);
+        println!("{}, {}, {}", 
+        HighlightedCard{card: set.0},
+        HighlightedCard{card: set.1},
+        HighlightedCard{card: set.2});
     }
 }
