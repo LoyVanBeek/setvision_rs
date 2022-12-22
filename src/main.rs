@@ -395,19 +395,13 @@ fn main() {
     match set_result {
         Ok(set) => {
             println!("These from a set:");
-            println!("{}, {}, {}", 
-                HighlightedCard{card: set.0},
-                HighlightedCard{card: set.1},
-                HighlightedCard{card: set.2});
+            println!("{}, {}, {}", set.0, set.1, set.2);
         },
         Err(_) => println!("No set found"),
     }
 
     let sets = find_all_sets(table.to_vec());
     for set in sets {
-        println!("{}, {}, {}", 
-        HighlightedCard{card: set.0},
-        HighlightedCard{card: set.1},
-        HighlightedCard{card: set.2});
+        println!("{}, {}, {}", set.0, set.1, set.2);
     }
 }
