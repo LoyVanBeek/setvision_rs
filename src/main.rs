@@ -107,7 +107,6 @@ struct Card {
     shape: Shape,
 }
 
-
 impl fmt::Display for Card {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -129,10 +128,17 @@ struct HighlightedCard<'a> {
 
 impl fmt::Display for HighlightedCard<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let card_repr = format!("{}", self.card);
-        let mut repr = ColouredStr::new(card_repr.as_str());
+        let shape_chr = format!("{}", self.card.shape).repeat(self.card.count.into());
+        let with_bracket = format!("[{}]", shape_chr);
+        let mut repr = ColouredStr::new(with_bracket.as_str());
+        repr.bold();
         repr.back_white();
-        write!(f, "[{repr}]")
+        match self.card.color {
+            Color::Red => repr.red(),
+            Color::Green => repr.green(),
+            Color::Purple => repr.magenta(),
+        };
+        write!(f, "{repr}")
     }
 }
 
@@ -417,6 +423,9 @@ fn main() {
     println!("-------------------------------------");
     let sets = find_all_sets(table.to_vec());
     for set in sets {
-        println!("{}, {}, {}", set.0, set.1, set.2);
+        println!("{}, {}, {}",
+        HighlightedCard{card: set.0},
+        HighlightedCard{card: set.1},
+        HighlightedCard{card: set.2});
     }
 }
