@@ -113,7 +113,8 @@ impl fmt::Display for Card {
     // This trait requires `fmt` with this exact signature.
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let shape_chr = format!("{}", self.shape).repeat(self.count.into());
-        let mut repr = ColouredStr::new(shape_chr.as_str());
+        let padded = format!("{: >3}", shape_chr);
+        let mut repr = ColouredStr::new(padded.as_str());
         repr.bold();
         match self.color {
             Color::Red => repr.red(),
@@ -130,8 +131,9 @@ struct HighlightedCard<'a> {
 
 impl fmt::Display for HighlightedCard<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let shape_chr = format!("{}", self.card.shape).repeat(self.card.count.into());
-        let with_bracket = format!("[{}]", shape_chr);
+        let shape_chr = format!("{}", self.card.shape).repeat(self.card.count.into());        
+        let padded = format!("{: >3}", shape_chr);
+        let with_bracket = format!("[{}]", padded);
         let mut repr = ColouredStr::new(with_bracket.as_str());
         repr.bold();
         repr.back_white();
