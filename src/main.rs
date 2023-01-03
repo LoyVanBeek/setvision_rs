@@ -189,7 +189,10 @@ impl Triple<'_> {
 }
 
 #[derive(Debug)]
-struct Table<'a>(Vec<&'a Card>);
+struct Table<'a> {
+    cards: Vec<&'a Card>,
+    triples: Vec<Triple<'a>>,
+}
 
 impl Table<'_> {
     
@@ -247,6 +250,23 @@ fn generate_all_cards() -> Vec<Card> {
     all_cards
 }
 
+fn display_solution(table: Table) {
+    // A table should always have a multiple of 3 cards
+    let remainder = table.cards.len() % 3;
+    assert!(remainder == 0);
+    let row_length = table.cards.len() / 3;
+
+    // let table_iter = table.cards.iter();
+
+    for x in 0..3 {
+        for y in 0..row_length{
+            let index = (x * row_length) + y;
+            let card = table.cards[index];
+            print!("{}", card);
+        }
+        println!();
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -422,10 +442,19 @@ fn main() {
     println!("These are all the sets in this table:");
     println!("-------------------------------------");
     let sets = find_all_sets(table.to_vec());
-    for set in sets {
+    for set in &sets {
         println!("{}, {}, {}",
         HighlightedCard{card: set.0},
         HighlightedCard{card: set.1},
         HighlightedCard{card: set.2});
     }
+
+
+    println!("display_solution: ");
+
+    let solved_table = Table {
+        cards: table,
+        triples: sets.into(),
+    };
+    display_solution(solved_table);
 }
