@@ -1,12 +1,14 @@
+use std::f32::consts::E;
 use std::{fmt, vec};
+use clap::Parser;
 
 extern crate ansi_colors;
 use ansi_colors::*;
 use std::slice::Iter;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
-// use rand::SeedableRng;
-// use rand_chacha::ChaCha8Rng;
+use rand::SeedableRng;
+use rand_chacha::ChaCha8Rng;
 use std::collections::HashSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -413,12 +415,29 @@ mod tests {
     }
 }
 
+/// Simple program to greet a person
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+   /// Seed: random number to shuffle cards with
+   #[arg(short, long)]
+   seed: Option<u64>
+}
+
 fn main() {
+    let args = Args::parse();
+
     let cards = generate_all_cards();
     // let all_card_refs: Vec<&Card> = cards.iter().collect();
 
-    let mut rng = thread_rng();//ChaCha8Rng::seed_from_u64(9);//
-    let table: Vec<&Card> = cards.choose_multiple(&mut rng, 12).collect();
+    let table: Vec<&Card> = if let Some(seed) = args.seed {
+        let mut rng = ChaCha8Rng::seed_from_u64(seed);
+        cards.choose_multiple(&mut rng, 12).collect()
+    }
+    else {
+        let mut rng = thread_rng();
+        cards.choose_multiple(&mut rng, 12).collect()
+    };
 
     let mut table_set = HashSet::with_capacity(12);
     for c in table.iter() {
