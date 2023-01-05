@@ -571,10 +571,6 @@ fn main() {
     let args = Args::parse();
 
     let mut cards = generate_all_cards();
-    for card in cards.iter() {
-        println!("{}", card);
-    }
-    // let all_card_refs: Vec<&Card> = cards.iter().collect();
 
     let table: Vec<&Card> = if let Some(seed) = args.seed {
         let mut rng = ChaCha8Rng::seed_from_u64(seed);
@@ -589,25 +585,6 @@ fn main() {
         cards.iter().take(12).collect()
     };
 
-    let mut table_set = HashSet::with_capacity(12);
-    for c in table.iter() {
-        table_set.insert(*(*c));
-    }
-    println!("There are {} unique cards on the table", table_set.len());
-    println!("{}, {}, {}", table[0], table[1], table[2]);
-    println!("{}, {}, {}", table[3], table[4], table[5]);
-    println!("{}, {}, {}", table[6], table[7], table[8]);
-    println!("{}, {}, {}", table[9], table[10], table[11]);
-
-    let set_result = find_set(table.to_vec());
-    match set_result {
-        Ok(set) => {
-            println!("These form a set:");
-            println!("{}, {}, {}", set.0, set.1, set.2);
-        },
-        Err(_) => println!("No set found"),
-    }
-
     println!("These are all the sets in this table:");
     println!("-------------------------------------");
     let sets = find_all_sets(table.to_vec());
@@ -617,7 +594,6 @@ fn main() {
         HighlightedCard{card: set.1},
         HighlightedCard{card: set.2});
     }
-
 
     println!("display_solution: ");
 
