@@ -1,4 +1,3 @@
-use std::f32::consts::E;
 use std::{fmt, vec};
 use clap::Parser;
 
@@ -9,7 +8,6 @@ use rand::seq::SliceRandom;
 use rand::thread_rng;
 use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
-use std::collections::HashSet;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum Color {
@@ -352,6 +350,7 @@ fn display_solution(table: Table) {
 mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
+    use std::collections::HashSet;
 
     // c1,2,3 together form a set, c1,2,4 do not
     const C1: Card = Card {
