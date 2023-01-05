@@ -117,9 +117,45 @@ impl fmt::Display for Card {
         let mut repr = ColouredStr::new(padded.as_str());
         repr.bold();
         match self.color {
-            Color::Red => repr.red(),
-            Color::Green => repr.green(),
-            Color::Purple => repr.magenta(),
+            Color::Red => match self.shading {
+                Shading::Open => {
+                    repr.red();
+                },
+                Shading::Solid => {
+                    repr.black();
+                    repr.back_red();
+                },
+                Shading::Striped => {
+                    repr.red();
+                    repr.underline();
+                },
+            },
+            Color::Green => match self.shading {
+                Shading::Open => {
+                    repr.green();
+                },
+                Shading::Solid => {
+                    repr.black();
+                    repr.back_green();
+                },
+                Shading::Striped => {
+                    repr.green();
+                    repr.underline();
+                },
+            },
+            Color::Purple => match self.shading {
+                Shading::Open => {
+                    repr.magenta();
+                },
+                Shading::Solid => {
+                    repr.black();
+                    repr.back_magenta();
+                },
+                Shading::Striped => {
+                    repr.magenta();
+                    repr.underline();
+                },
+            },
         };
         write!(f, "[{repr}]")
     }
@@ -133,16 +169,56 @@ impl fmt::Display for HighlightedCard<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let shape_chr = format!("{}", self.card.shape).repeat(self.card.count.into());        
         let padded = format!("{: ^3}", shape_chr);
-        let with_bracket = format!("[{}]", padded);
-        let mut repr = ColouredStr::new(with_bracket.as_str());
+        let mut repr = ColouredStr::new(padded.as_str());
         repr.bold();
-        repr.back_white();
         match self.card.color {
-            Color::Red => repr.red(),
-            Color::Green => repr.green(),
-            Color::Purple => repr.magenta(),
+            Color::Red => match self.card.shading {
+                Shading::Open => {
+                    repr.red();
+                },
+                Shading::Solid => {
+                    repr.black();
+                    repr.back_red();
+                },
+                Shading::Striped => {
+                    repr.red();
+                    repr.underline();
+                },
+            },
+            Color::Green => match self.card.shading {
+                Shading::Open => {
+                    repr.green();
+                },
+                Shading::Solid => {
+                    repr.black();
+                    repr.back_green();
+                },
+                Shading::Striped => {
+                    repr.green();
+                    repr.underline();
+                },
+            },
+            Color::Purple => match self.card.shading {
+                Shading::Open => {
+                    repr.magenta();
+                },
+                Shading::Solid => {
+                    repr.black();
+                    repr.back_magenta();
+                },
+                Shading::Striped => {
+                    repr.magenta();
+                    repr.underline();
+                },
+            },
         };
-        write!(f, "{repr}")
+        let mut colored_start_bracket = ColouredStr::new("[");
+        colored_start_bracket.black();
+        colored_start_bracket.back_white();
+        let mut colored_end_bracket = ColouredStr::new("]");
+        colored_end_bracket.black();
+        colored_end_bracket.back_white();
+        write!(f, "{colored_start_bracket}{repr}{colored_end_bracket}")
     }
 }
 
