@@ -101,7 +101,7 @@ impl Shape {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone, Copy)]
 struct Card {
     color: Color,
     count: Count,
@@ -452,6 +452,67 @@ mod tests {
     };
 
     #[test]
+    fn test_cards_equal() {
+        let a = Card {
+            color: Color::Green,
+            count: Count::from_int(1),
+            shading: Shading::Solid,
+            shape: Shape::Squiggle,
+        };
+        let b = a.clone();
+
+        let c = Card {
+            color: Color::Green,
+            count: Count::from_int(1),
+            shading: Shading::Solid,
+            shape: Shape::Squiggle,
+        };
+
+        assert_eq!(a, b);
+        assert_eq!(b, c);
+        assert_eq!(c, a);
+    }
+
+    #[test]
+    fn test_hashset_keeps_only_unique() {
+        let a = Card {
+            color: Color::Green,
+            count: Count::from_int(1),
+            shading: Shading::Solid,
+            shape: Shape::Squiggle,
+        };
+        let b = a.clone();
+
+        let c = Card {
+            color: Color::Green,
+            count: Count::from_int(1),
+            shading: Shading::Solid,
+            shape: Shape::Squiggle,
+        };
+
+        let mut set = HashSet::new();
+        set.insert(a);
+        assert_eq!(set.len(), 1);
+        set.insert(b);
+        // b is the same thing as a, set should keep only unique things, so set doesn't increase in size
+        assert_eq!(set.len(), 1);
+        set.insert(c);
+        assert_eq!(set.len(), 1);
+
+        let collection = vec![a, b, c];
+        assert_eq!(collection.len(), 3);
+        let mut set2 = HashSet::new();
+        set2.extend(collection);
+        assert_eq!(set2.len(), 1);
+
+        let collection = vec![&a, &b, &c];
+        assert_eq!(collection.len(), 3);
+        let mut set3: HashSet<&Card> = HashSet::new();
+        set3.extend(collection.iter());
+        assert_eq!(set3.len(), 1);
+    }
+
+    #[test]
     fn test_same_color_true() {
         assert_eq!(Triple(&K1, &K2, &K3).all_same_color(), true);
     }
@@ -490,6 +551,10 @@ mod tests {
     fn test_generate_all_cards() {
         let cards = generate_all_cards();
         assert_eq!(81, cards.len());
+
+        let mut set = HashSet::new();
+        set.extend(cards);
+        assert_eq!(set.len(), 81);
     }
 }
 
@@ -505,21 +570,28 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let cards = generate_all_cards();
+    let mut cards = generate_all_cards();
+    for card in cards.iter() {
+        println!("{}", card);
+    }
     // let all_card_refs: Vec<&Card> = cards.iter().collect();
 
     let table: Vec<&Card> = if let Some(seed) = args.seed {
         let mut rng = ChaCha8Rng::seed_from_u64(seed);
-        cards.choose_multiple(&mut rng, 12).collect()
+        // cards.choose_multiple(&mut rng, 12).collect()
+        cards.shuffle(&mut rng);
+        cards.iter().take(12).collect()
     }
     else {
         let mut rng = thread_rng();
-        cards.choose_multiple(&mut rng, 12).collect()
+        // cards.choose_multiple(&mut rng, 12).collect()
+        cards.shuffle(&mut rng);
+        cards.iter().take(12).collect()
     };
 
     let mut table_set = HashSet::with_capacity(12);
     for c in table.iter() {
-        table_set.insert(*c);
+        table_set.insert(*(*c));
     }
     println!("There are {} unique cards on the table", table_set.len());
     println!("{}, {}, {}", table[0], table[1], table[2]);
