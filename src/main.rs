@@ -336,13 +336,23 @@ fn display_solution(table: Table) {
 
     // let table_iter = table.cards.iter();
 
-    for x in 0..3 {
-        for y in 0..row_length{
-            let index = (x * row_length) + y;
-            let card = table.cards[index];
-            print!("{}", card);
+    for triple in table.triples {
+        for x in 0..3 {
+            for y in 0..row_length{
+                let index = (x * row_length) + y;
+                let card = table.cards[index];
+                if card == triple.0 || card == triple.1 || card == triple.2
+                {
+                    print!("{}", HighlightedCard{card: card});
+                }
+                else {
+                    print!("{}", card);
+                }
+                
+            }
+            println!();
         }
-        println!();
+        println!("--------------------");
     }
 }
 
@@ -587,15 +597,6 @@ fn main() {
     println!("These are all the sets in this table:");
     println!("-------------------------------------");
     let sets = find_all_sets(table.to_vec());
-    for set in &sets {
-        println!("{}, {}, {}",
-        HighlightedCard{card: set.0},
-        HighlightedCard{card: set.1},
-        HighlightedCard{card: set.2});
-    }
-
-    println!("display_solution: ");
-
     let solved_table = Table {
         cards: table,
         triples: sets.into(),
