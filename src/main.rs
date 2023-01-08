@@ -581,26 +581,26 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    let mut cards = generate_all_cards();
+    let mut all_cards = generate_all_cards();
 
-    let table: Vec<&Card> = if let Some(seed) = args.seed {
+    let selected_cards: Vec<&Card> = if let Some(seed) = args.seed {
         let mut rng = ChaCha8Rng::seed_from_u64(seed);
         // cards.choose_multiple(&mut rng, 12).collect()
-        cards.shuffle(&mut rng);
-        cards.iter().take(12).collect()
+        all_cards.shuffle(&mut rng);
+        all_cards.iter().take(12).collect()
     }
     else {
         let mut rng = thread_rng();
         // cards.choose_multiple(&mut rng, 12).collect()
-        cards.shuffle(&mut rng);
-        cards.iter().take(12).collect()
+        all_cards.shuffle(&mut rng);
+        all_cards.iter().take(12).collect()
     };
 
     println!("These are all the sets in this table:");
     println!("-------------------------------------");
-    let sets = find_all_sets(table.to_vec());
+    let sets = find_all_sets(selected_cards.to_vec());
     let solved_table = Table {
-        cards: table,
+        cards: selected_cards,
         triples: sets.into(),
     };
     println!("{}", solved_table);
