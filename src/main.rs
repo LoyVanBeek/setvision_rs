@@ -3,7 +3,9 @@ use clap::Parser;
 
 extern crate ansi_colors;
 use ansi_colors::*;
-use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage};
+use image::DynamicImage;
+use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage, Rgb};
+use imageproc::definitions::Image;
 use std::slice::Iter;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -584,7 +586,7 @@ struct Args {
 
 // #[cfg(feature = "display-window")]
 fn main() {
-    use imageproc::window::display_image;
+    use imageproc::window::display_multiple_images;
 
     let args = Args::parse();
 
@@ -613,9 +615,14 @@ fn main() {
     println!("{}", solved_table);
 
     if let Some(path) = args.img_path {
-        let img = image::open(path).expect("No image found at provided path")
-        .to_rgba8();
-        display_image("", &img, 500, 500);
+        let img = image::open(path).expect("No image found at provided path").to_rgb8();
+        let grayscaled = image::imageops::grayscale(&img);
+        let grayscale_as_rgb = ImageBuffer::from_fn(img.width(), img.height(),
+            |x, y| Rgb([
+                grayscaled.get_pixel(x, y).0[0],
+                grayscaled.get_pixel(x, y).0[0],
+                grayscaled.get_pixel(x, y).0[0]]));
+        display_multiple_images("", &vec![&img, &grayscale_as_rgb], 500, 500);
     }
     
 }
