@@ -328,31 +328,33 @@ fn generate_all_cards() -> Vec<Card> {
     all_cards
 }
 
-fn display_solution(table: Table) {
-    // A table should always have a multiple of 3 cards
-    let remainder = table.cards.len() % 3;
-    assert!(remainder == 0);
-    let row_length = table.cards.len() / 3;
+impl fmt::Display for Table<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+            // A table should always have a multiple of 3 cards
+        let remainder = self.cards.len() % 3;
+        assert!(remainder == 0);
+        let row_length = self.cards.len() / 3;
 
-    // let table_iter = table.cards.iter();
+        // let self_iter = self.cards.iter();
 
-    for triple in table.triples {
-        for x in 0..3 {
-            for y in 0..row_length{
-                let index = (x * row_length) + y;
-                let card = table.cards[index];
-                if card == triple.0 || card == triple.1 || card == triple.2
-                {
-                    print!("{}", HighlightedCard{card: card});
+        for triple in &self.triples {
+            for x in 0..3 {
+                for y in 0..row_length{
+                    let index = (x * row_length) + y;
+                    let card = self.cards[index];
+                    if card == triple.0 || card == triple.1 || card == triple.2
+                    {
+                        write!(f, "{}", HighlightedCard{card: card}).unwrap();
+                    }
+                    else {
+                        write!(f, "{}", card).unwrap();
+                    }
                 }
-                else {
-                    print!("{}", card);
-                }
-                
+                write!(f, "\n").unwrap();
             }
-            println!();
+            write!(f, "--------------------\n").unwrap();
         }
-        println!("--------------------");
+        write!(f, "")
     }
 }
 
@@ -601,5 +603,5 @@ fn main() {
         cards: table,
         triples: sets.into(),
     };
-    display_solution(solved_table);
+    println!("{}", solved_table);
 }
