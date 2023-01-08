@@ -3,6 +3,7 @@ use clap::Parser;
 
 extern crate ansi_colors;
 use ansi_colors::*;
+use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage};
 use std::slice::Iter;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -575,10 +576,16 @@ mod tests {
 struct Args {
    /// Seed: random number to shuffle cards with
    #[arg(short, long)]
-   seed: Option<u64>
+   seed: Option<u64>,
+
+   /// Image path: where to load an image from?
+   img_path: Option<String>
 }
 
+// #[cfg(feature = "display-window")]
 fn main() {
+    use imageproc::window::display_image;
+
     let args = Args::parse();
 
     let mut all_cards = generate_all_cards();
@@ -604,4 +611,11 @@ fn main() {
         triples: sets.into(),
     };
     println!("{}", solved_table);
+
+    if let Some(path) = args.img_path {
+        let img = image::open(path).expect("No image found at provided path")
+        .to_rgba8();
+        display_image("", &img, 500, 500);
+    }
+    
 }
