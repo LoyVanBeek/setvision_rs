@@ -622,7 +622,8 @@ fn main() {
     if let Some(path) = args.img_path {
         let img = image::open(path).expect("No image found at provided path").to_rgb8();
         let grayscaled = image::imageops::grayscale(&img);
-        display_multiple_images("", &vec![&img, &to_rgb(&grayscaled)], 500, 500);
+        let canny = imageproc::edges::canny(&grayscaled, 30.0, 50.0);
+        display_multiple_images("", &vec![&img, &to_rgb(&grayscaled), &to_rgb(&canny)], 500, 500);
     }
     
 }
