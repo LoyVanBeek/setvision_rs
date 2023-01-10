@@ -4,7 +4,7 @@ use clap::Parser;
 extern crate ansi_colors;
 use ansi_colors::*;
 use image::{DynamicImage, Pixel};
-use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage, Rgb};
+use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage, Rgb, Luma};
 use imageproc::definitions::Image;
 use std::slice::Iter;
 use rand::seq::SliceRandom;
@@ -584,6 +584,11 @@ struct Args {
    img_path: Option<String>
 }
 
+fn to_rgb(image: &ImageBuffer<Luma<u8>, Vec<u8>>) -> ImageBuffer<Rgb<u8>, Vec<u8>> {
+    ImageBuffer::from_fn(image.width(), image.height(),
+        |x, y| image.get_pixel(x, y).to_rgb())
+}
+
 // #[cfg(feature = "display-window")]
 fn main() {
     use imageproc::window::display_multiple_images;
@@ -617,9 +622,7 @@ fn main() {
     if let Some(path) = args.img_path {
         let img = image::open(path).expect("No image found at provided path").to_rgb8();
         let grayscaled = image::imageops::grayscale(&img);
-        let grayscale_as_rgb = ImageBuffer::from_fn(img.width(), img.height(),
-            |x, y| grayscaled.get_pixel(x, y).to_rgb());
-        display_multiple_images("", &vec![&img, &grayscale_as_rgb], 500, 500);
+        display_multiple_images("", &vec![&img, &to_rgb(&grayscaled)], 500, 500);
     }
     
 }
