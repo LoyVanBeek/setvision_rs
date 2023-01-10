@@ -3,7 +3,7 @@ use clap::Parser;
 
 extern crate ansi_colors;
 use ansi_colors::*;
-use image::DynamicImage;
+use image::{DynamicImage, Pixel};
 use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage, Rgb};
 use imageproc::definitions::Image;
 use std::slice::Iter;
@@ -618,10 +618,7 @@ fn main() {
         let img = image::open(path).expect("No image found at provided path").to_rgb8();
         let grayscaled = image::imageops::grayscale(&img);
         let grayscale_as_rgb = ImageBuffer::from_fn(img.width(), img.height(),
-            |x, y| Rgb([
-                grayscaled.get_pixel(x, y).0[0],
-                grayscaled.get_pixel(x, y).0[0],
-                grayscaled.get_pixel(x, y).0[0]]));
+            |x, y| grayscaled.get_pixel(x, y).to_rgb());
         display_multiple_images("", &vec![&img, &grayscale_as_rgb], 500, 500);
     }
     
