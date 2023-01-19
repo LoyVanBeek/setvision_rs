@@ -6,6 +6,7 @@ use ansi_colors::*;
 use image::{DynamicImage, Pixel};
 use image::{GenericImage, GenericImageView, ImageBuffer, RgbImage, Rgb, Luma};
 use imageproc::definitions::Image;
+// use imageproc::distance_transform::Norm;
 use std::slice::Iter;
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -623,7 +624,15 @@ fn main() {
         let img = image::open(path).expect("No image found at provided path").to_rgb8();
         let grayscaled = image::imageops::grayscale(&img);
         let canny = imageproc::edges::canny(&grayscaled, 30.0, 50.0);
-        display_multiple_images("", &vec![&img, &to_rgb(&grayscaled), &to_rgb(&canny)], 500, 500);
+        // let opened = imageproc::morphology::close(&canny, Norm::LInf, 1);
+
+        display_multiple_images("", &vec![
+            &img,
+            &to_rgb(&grayscaled),
+            &to_rgb(&canny),
+            // &to_rgb(&opened)
+            ], 500, 500);
     }
     
 }
+
