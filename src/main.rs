@@ -62,6 +62,9 @@ fn main() {
         let grayscaled = image::imageops::grayscale(&img);
         let canny = imageproc::edges::canny(&grayscaled, 30.0, 50.0);
         // let opened = imageproc::morphology::close(&canny, Norm::LInf, 1);
+        let contours: Vec<imageproc::contours::Contour<u64>> = imageproc::contours::find_contours(&canny);
+
+        println!("There are {} contours found", contours.len());
 
         display_multiple_images("", &vec![
             &img,
