@@ -1,7 +1,8 @@
+// use core::slice::SlicePattern;
 use std::vec;
 use clap::Parser;
 
-use image::{Pixel};
+use image::{Pixel, GenericImage};
 use image::{ImageBuffer, Rgb, Luma};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
@@ -62,15 +63,29 @@ fn main() {
         let grayscaled = image::imageops::grayscale(&img);
         let canny = imageproc::edges::canny(&grayscaled, 30.0, 50.0);
         // let opened = imageproc::morphology::close(&canny, Norm::LInf, 1);
-        let contours: Vec<imageproc::contours::Contour<u64>> = imageproc::contours::find_contours(&canny);
+        let contours: Vec<imageproc::contours::Contour<i32>> = imageproc::contours::find_contours(&canny);
+        // TODO: sort these contrours. Each contour has a parent that contains it, 
+        //  so make some sort of graph and start at the top for drawing
 
         println!("There are {} contours found", contours.len());
+        let mut contour_img = ImageBuffer::new(img.width(), img.height());
+        contour_img.copy_from(&img, 0, 0).unwrap();
+
+        for contour in contours {
+            // println!("There are {} points in this contour", contour.points.len());
+            if contour.points.len() > 1 {
+                let color = Rgb([255u8, 0u8, 0u8]); //TODO: different color for each
+                let polygon = contour.points.as_slice();
+                imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
+            }
+        }
 
         display_multiple_images("", &vec![
             &img,
             &to_rgb(&grayscaled),
             &to_rgb(&canny),
             // &to_rgb(&opened)
+            &contour_img,
             ], 500, 500);
     }
     
