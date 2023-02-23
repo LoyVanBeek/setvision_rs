@@ -1,14 +1,14 @@
-pub struct TreeNode {
-    pub value: usize,
-    pub left:  Option<Box<TreeNode>>,
-    pub right: Option<Box<TreeNode>>
+pub struct TreeNode<T> {
+    pub value: T,
+    pub left:  Option<Box<TreeNode<T>>>,
+    pub right: Option<Box<TreeNode<T>>>
 }
 
-impl TreeNode {
+impl<T> TreeNode<T> {
     pub fn new(
-                value: usize,
-                left: Option<Box<TreeNode>>,
-                right: Option<Box<TreeNode>>
+                value: T,
+                left: Option<Box<TreeNode<T>>>,
+                right: Option<Box<TreeNode<T>>>
               ) -> Self {
         TreeNode {
             value,
@@ -18,28 +18,28 @@ impl TreeNode {
     }
 }
 
-pub struct Tree {
-    root: Option<TreeNode>
+pub struct Tree<T> {
+    root: Option<TreeNode<T>>
 }
 
-impl Tree {
-    pub fn new(root: Option<TreeNode>) -> Self {
+impl<T> Tree<T> {
+    pub fn new(root: Option<TreeNode<T>>) -> Self {
         Tree {
             root
         }
     }
 
-    pub fn iter(&self) -> PreorderIter {
+    pub fn iter(&self) -> PreorderIter<T> {
         PreorderIter::new(self.root.as_ref())
     }
 }
 
-pub struct PreorderIter<'a> {
-    stack: Vec<&'a TreeNode>
+pub struct PreorderIter<'a, T> {
+    stack: Vec<&'a TreeNode<T>>
 }
 
-impl<'a> PreorderIter<'a> {
-    pub fn new<'b: 'a>(root: Option<&'b TreeNode>) -> Self {
+impl<'a, T> PreorderIter<'a, T> {
+    pub fn new<'b: 'a>(root: Option<&'b TreeNode<T>>) -> Self {
         if let Some(node) = root {
             PreorderIter {
                 stack: vec![node]
@@ -51,8 +51,8 @@ impl<'a> PreorderIter<'a> {
         }
     }
 }
-impl<'a> Iterator for PreorderIter<'a> {
-  type Item = &'a TreeNode;
+impl<'a, T> Iterator for PreorderIter<'a, T> {
+  type Item = &'a TreeNode<T>;
   fn next(&mut self) -> Option<Self::Item> {
       if let Some(node) = self.stack.pop() {
           if let Some(right) = &node.right {
@@ -70,7 +70,7 @@ impl<'a> Iterator for PreorderIter<'a> {
 #[cfg(test)]
 mod tests {
     use super::{Tree, TreeNode};
-    
+
     #[test]
     fn test_create_tree() {
         let a = TreeNode::new(4, None, None);
