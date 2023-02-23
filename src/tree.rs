@@ -1,19 +1,16 @@
 pub struct TreeNode<T> {
     pub value: T,
-    pub left:  Option<Box<TreeNode<T>>>,
-    pub right: Option<Box<TreeNode<T>>>
+    pub children:  Vec<Box<TreeNode<T>>>
 }
 
 impl<T> TreeNode<T> {
     pub fn new(
                 value: T,
-                left: Option<Box<TreeNode<T>>>,
-                right: Option<Box<TreeNode<T>>>
+                children: Vec<Box<TreeNode<T>>>
               ) -> Self {
         TreeNode {
             value,
-            left,
-            right
+            children,
         }
     }
 }
@@ -51,19 +48,18 @@ impl<'a, T> PreorderIter<'a, T> {
         }
     }
 }
+
 impl<'a, T> Iterator for PreorderIter<'a, T> {
   type Item = &'a TreeNode<T>;
   fn next(&mut self) -> Option<Self::Item> {
-      if let Some(node) = self.stack.pop() {
-          if let Some(right) = &node.right {
-              self.stack.push(&right)
-          }
-          if let Some(left) = &node.left {
-              self.stack.push(&left)
-          }
-          return Some(node)
-      }
-      return None
+    if let Some(node) = self.stack.pop() {
+        let mut item_iter = node.children.iter().peekable();
+        if let Some(child) = item_iter.next() {
+            self.stack.push(&child)
+        }
+        return Some(node)
+    }
+    return None
   }
 }
 
@@ -73,12 +69,12 @@ mod tests {
 
     #[test]
     fn test_create_tree() {
-        let a = TreeNode::new(4, None, None);
-        let b = TreeNode::new(5, None, None);
-        let c = TreeNode::new(2, Some(Box::from(a)), Some(Box::from(b)));
+        let a = TreeNode::new(4, vec![]);
+        let b = TreeNode::new(5, vec![]);
+        let c = TreeNode::new(2, vec![Box::from(a), Box::from(b)]);
         
-        let d = TreeNode::new(3, None, None);
-        let e = TreeNode::new(1, Some(Box::from(c)), Some(Box::from(d)));
+        let d = TreeNode::new(3, vec![]);
+        let e = TreeNode::new(1, vec![Box::from(c), Box::from(d)]);
         
         let tree = Tree::new(Some(e));
         
