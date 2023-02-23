@@ -10,6 +10,7 @@ use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
 
 use setvision::*;
+mod tree;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
