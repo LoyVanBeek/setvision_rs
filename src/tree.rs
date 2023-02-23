@@ -1,6 +1,9 @@
+use std::rc::Rc;
+
 pub struct TreeNode<T> {
     pub value: T,
-    pub children:  Vec<Box<TreeNode<T>>>
+    pub children: Vec<Box<TreeNode<T>>>,
+    pub parent: Option<Rc<TreeNode<T>>>
 }
 
 impl<T> TreeNode<T> {
@@ -11,6 +14,7 @@ impl<T> TreeNode<T> {
         TreeNode {
             value,
             children,
+            parent: None,
         }
     }
 }
