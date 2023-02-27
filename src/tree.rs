@@ -31,15 +31,6 @@ impl<T: Display> TreeNode<T> {
             None => 0
         }
     }
-
-    // pub fn add_child(&self, mut child: Rc<TreeNode<T>>) -> () {
-    //     self.children.borrow_mut().push(Rc::clone(&child));
-    //     // let immutable_self = *self;
-    //     // let weak = Weak::new(); //::from(immutable_self);
-    //     // child.parent = RefCell::new(Weak::clone(&self));
-    //     let rc_self = Rc::new(*self);
-    //     *child.parent.borrow_mut() = Rc::downgrade(&rc_self);
-    // }
 }
 
 pub fn add_child<T: Display>(parent: &Rc<TreeNode<T>>, child: &Rc<TreeNode<T>>) -> () {
