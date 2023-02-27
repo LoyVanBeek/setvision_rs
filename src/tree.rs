@@ -35,53 +35,6 @@ impl<T> TreeNode<T> {
     // }
 }
 
-// pub struct Tree<T> {
-//     root: Option<TreeNode<T>>
-// }
-
-// impl<T> Tree<T> {
-//     pub fn new(root: Option<TreeNode<T>>) -> Self {
-//         Tree {
-//             root
-//         }
-//     }
-
-//     pub fn iter(&self) -> PreorderIter<T> {
-//         PreorderIter::new(self.root.as_ref())
-//     }
-// }
-
-// pub struct PreorderIter<'a, T> {
-//     stack: Vec<&'a TreeNode<T>>
-// }
-
-// impl<'a, T> PreorderIter<'a, T> {
-//     pub fn new<'b: 'a>(root: Option<&'b TreeNode<T>>) -> Self {
-//         if let Some(node) = root {
-//             PreorderIter {
-//                 stack: vec![node]
-//             }
-//         } else {
-//             PreorderIter {
-//                 stack: vec![]
-//             }
-//         }
-//     }
-// }
-
-// impl<'a, T> Iterator for PreorderIter<'a, T> {
-//   type Item = &'a TreeNode<T>;
-//   fn next(&mut self) -> Option<Self::Item> {
-//     if let Some(node) = self.stack.pop() {
-//         let mut item_iter = node.children.borrow().iter().peekable();
-//         if let Some(child) = item_iter.next() {
-//             self.stack.push(&child)
-//         }
-//         return Some(node)
-//     }
-//     return None
-//   }
-// }
 
 #[cfg(test)]
 mod tests {
@@ -102,15 +55,5 @@ mod tests {
         // assert_eq!(c.level(), 1); // Child of e
         // assert_eq!(b.level(), 2); // Child of c
         // assert_eq!(a.level(), 2); // Child of c
-        // let tree = Tree::new(Some(e));
-        
-        // for _node in tree.iter() {
-        //     // _node.value *= 10;
-        // }
-        
-        // let mut iterator = tree.iter();
-        // while let Some(node) = iterator.next() { // equivalent to the for loop construction
-        //     println!("{}", node.value)
-        // }
     }
 }
