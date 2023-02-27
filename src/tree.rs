@@ -32,12 +32,13 @@ impl<T: Display> TreeNode<T> {
         }
     }
 
-    // pub fn add_child(&mut self, mut child: Box<TreeNode<T>>) -> () {
-    //     self.children.push(child);
-    //     let immutable_self = *self;
-    //     let weak = Weak::new(); //::from(immutable_self);
-    //     child.parent = Some(weak); //Weak::from(*self));
-    // }
+    pub fn add_child(self: Rc<TreeNode<T>>, mut child: Rc<TreeNode<T>>) -> () {
+        self.children.borrow_mut().push(Rc::clone(&child));
+        // let immutable_self = *self;
+        // let weak = Weak::new(); //::from(immutable_self);
+        // child.parent = RefCell::new(Weak::clone(&self));
+        *child.parent.borrow_mut() = Rc::downgrade(&self);
+    }
 }
 
 
@@ -49,9 +50,13 @@ mod tests {
     fn test_create_tree() {
         let a = Rc::new(TreeNode::new('a', RefCell::new(vec![])));
         let b = Rc::new(TreeNode::new('b', RefCell::new(vec![])));
-        let c = Rc::new(TreeNode::new('c', RefCell::new(vec![Rc::clone(&a), Rc::clone(&b)])));
+        // let c = Rc::new(TreeNode::new('c', RefCell::new(vec![Rc::clone(&a), Rc::clone(&b)])));
+        let c = Rc::new(TreeNode::new('c', RefCell::new(vec![])));
+        // c.add_child(a);
+        // c.add_child(b);
         let d = Rc::new(TreeNode::new('d', RefCell::new(vec![])));
-        let e = Rc::new(TreeNode::new('e', RefCell::new(vec![Rc::clone(&c), Rc::clone(&d)])));
+        // let e = Rc::new(TreeNode::new('e', RefCell::new(vec![Rc::clone(&c), Rc::clone(&d)])));
+        let e = Rc::new(TreeNode::new('e', RefCell::new(vec![])));
         
         println!("{:?}", e);
 
