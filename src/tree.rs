@@ -42,7 +42,7 @@ impl<T: Display> TreeNode<T> {
     // }
 }
 
-pub fn add_child<T: Display>(parent: &mut Rc<TreeNode<T>>, child: &mut Rc<TreeNode<T>>) -> () {
+pub fn add_child<T: Display>(parent: &Rc<TreeNode<T>>, child: &Rc<TreeNode<T>>) -> () {
     parent.children.borrow_mut().push(Rc::clone(child));
     *child.parent.borrow_mut() = Rc::downgrade(parent);
 }
