@@ -1,14 +1,15 @@
+use std::fmt::Display;
 use std::rc::{Rc, Weak};
 use std::cell::RefCell;
 
 #[derive(Debug)]
-pub struct TreeNode<T> {
+pub struct TreeNode<T: Display> {
     pub value: T,
     pub children: RefCell<Vec<Rc<TreeNode<T>>>>,
     pub parent: RefCell<Weak<TreeNode<T>>>
 }
 
-impl<T> TreeNode<T> {
+impl<T: Display> TreeNode<T> {
     pub fn new(
                 value: T,
                 children: RefCell<Vec<Rc<TreeNode<T>>>>
@@ -21,8 +22,12 @@ impl<T> TreeNode<T> {
     }
 
     pub fn level(&self) -> usize {
+        println!("I have value {:}", self.value);
         match self.parent.borrow().upgrade() {
-            Some(parent) => 1 + parent.level(),
+            Some(parent) => {
+                println!("My parent has value {:}", parent.value);
+                1 + parent.level()
+            },
             None => 0
         }
     }
