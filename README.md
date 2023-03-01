@@ -11,9 +11,9 @@ Rust port of SetVision project
 - [ ] Parse table of cards from cmdline/file input
 - [ ] All the computer vision stuff :-)
   - [ ] See https://github.com/LoyVanBeek/SetVision/blob/master/SetVision/Window1.xaml.cs#L42
-  - [ ] Convert to grayscale
-  - [ ] Do canny edge detection with thresholds: https://github.com/LoyVanBeek/SetVision/blob/master/SetVision/Vision/ContourAnalyzer.cs#L46
-  - [ ] Closing on that image with a structuring element: https://github.com/LoyVanBeek/SetVision/blob/master/SetVision/Vision/ContourAnalyzer.cs#L65
-  - [ ] Then contour finding
+  - [x] Convert to grayscale
+  - [x] Do canny edge detection with thresholds: https://github.com/LoyVanBeek/SetVision/blob/master/SetVision/Vision/ContourAnalyzer.cs#L46
+  - [x] Closing on that image with a structuring element: https://github.com/LoyVanBeek/SetVision/blob/master/SetVision/Vision/ContourAnalyzer.cs#L65
+  - [x] Then contour finding
   - [ ] Filter the contours to determine their shape
   - [ ] etc.
