@@ -106,14 +106,23 @@ fn main() {
             Rgb([255u8, 255u8, 0u8]),
             Rgb([255u8, 255u8, 255u8])];
 
-        for contour_ref in contour_mapping.values() {
-            let node = contour_ref.to_owned();
-            let color = colors[node.level()];
-            let contour = node.value;
-            // println!("There are {} points in this contour", contour.points.len());
-            if contour.points.len() > 1 {
-                let polygon = contour.points.as_slice();
-                imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
+        let mut levels = vec![Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new(), Vec::new()];
+
+        for contour_node in contour_mapping.values() {
+            let level = contour_node.level();
+            levels[level].push(contour_node);
+        }
+
+        for level in levels {
+            for contour_ref in level {
+                let node = contour_ref.to_owned();
+                let color = colors[node.level()];
+                let contour = node.value;
+                // println!("There are {} points in this contour", contour.points.len());
+                if contour.points.len() > 1 {
+                    let polygon = contour.points.as_slice();
+                    imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
+                }
             }
         }
         
