@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use std::rc::Rc;
 // use core::slice::SlicePattern;
 use std::vec;
 use clap::Parser;
@@ -7,9 +9,12 @@ use image::{ImageBuffer, Rgb, Luma};
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 use rand::SeedableRng;
+use imageproc::contours::Contour;
 use rand_chacha::ChaCha8Rng;
 
 use setvision::*;
+
+use crate::tree::{add_child, TreeNode};
 mod tree;
 
 /// Simple program to greet a person
@@ -64,7 +69,7 @@ fn main() {
         let grayscaled = image::imageops::grayscale(&img);
         let canny = imageproc::edges::canny(&grayscaled, 30.0, 50.0);
         // let opened = imageproc::morphology::close(&canny, Norm::LInf, 1);
-        let contours: Vec<imageproc::contours::Contour<i32>> = imageproc::contours::find_contours(&canny);
+        let contours: Vec<Contour<i32>> = imageproc::contours::find_contours(&canny);
         // TODO: sort these contrours. Each contour has a parent that contains it, 
         //  so make some sort of graph and start at the top for drawing
 
@@ -72,14 +77,29 @@ fn main() {
         let mut contour_img = ImageBuffer::new(img.width(), img.height());
         contour_img.copy_from(&img, 0, 0).unwrap();
 
-        for contour in contours {
-            // println!("There are {} points in this contour", contour.points.len());
-            if contour.points.len() > 1 {
-                let color = Rgb([255u8, 0u8, 0u8]); //TODO: different color for each
-                let polygon = contour.points.as_slice();
-                imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
-            }
+        let mut contour_mapping = HashMap::new(); //<usize, TreeNode<Contour<i32>>>
+
+        for (index, contour) in contours.iter().enumerate() {
+            let contour_treenode = Rc::new(TreeNode::new_childless(contour));
+            contour_mapping.insert(index, contour_treenode);
         }
+
+        // for (index, contour) in contours.iter().enumerate() {
+        //     match contour.parent {
+        //         Some(parent_index) => {
+        //             // let parent = contour_mapping.get(&parent_index).unwrap();
+        //             // add_child(Rc::new(*parent), contour)
+        //         }
+        //         None => ()
+        //     }
+        // }
+
+        // // println!("There are {} points in this contour", contour.points.len());
+            // if contour.points.len() > 1 {
+            //     let color = Rgb([255u8, 0u8, 0u8]); //TODO: different color for each
+            //     let polygon = contour.points.as_slice();
+            //     imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
+            // }
 
         display_multiple_images("", &vec![
             &img,
