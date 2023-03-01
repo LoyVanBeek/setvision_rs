@@ -1,3 +1,4 @@
+use std::borrow::{Borrow, BorrowMut};
 use std::collections::HashMap;
 use std::rc::Rc;
 // use core::slice::SlicePattern;
@@ -84,23 +85,38 @@ fn main() {
             contour_mapping.insert(index, contour_treenode);
         }
 
-        // for (index, contour) in contours.iter().enumerate() {
-        //     match contour.parent {
-        //         Some(parent_index) => {
-        //             // let parent = contour_mapping.get(&parent_index).unwrap();
-        //             // add_child(Rc::new(*parent), contour)
-        //         }
-        //         None => ()
-        //     }
-        // }
+        for child_ref in contour_mapping.values() {
+            let child = child_ref.to_owned();
+            match child.value.parent {
+                Some(parent_index) => {
+                    let parent = contour_mapping.get(&parent_index).unwrap().borrow();
+                    add_child(parent, &child);
+                }
+                None => ()
+            }
+        }
 
-        // // println!("There are {} points in this contour", contour.points.len());
-            // if contour.points.len() > 1 {
-            //     let color = Rgb([255u8, 0u8, 0u8]); //TODO: different color for each
-            //     let polygon = contour.points.as_slice();
-            //     imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
-            // }
+        let colors = vec![ 
+            Rgb([0u8, 0u8, 0u8]),
+            Rgb([0u8, 0u8, 255u8]),
+            Rgb([0u8, 255u8, 0u8]),
+            Rgb([0u8, 255u8, 255u8]),
+            Rgb([255u8, 0u8, 0u8]),
+            Rgb([255u8, 0u8, 255u8]),
+            Rgb([255u8, 255u8, 0u8]),
+            Rgb([255u8, 255u8, 255u8])];
 
+        for contour_ref in contour_mapping.values() {
+            let node = contour_ref.to_owned();
+            let color = colors[node.level()];
+            let contour = node.value;
+            // println!("There are {} points in this contour", contour.points.len());
+            if contour.points.len() > 1 {
+                let polygon = contour.points.as_slice();
+                imageproc::drawing::draw_polygon_mut(&mut contour_img, polygon, color);
+            }
+        }
+        
         display_multiple_images("", &vec![
             &img,
             &to_rgb(&grayscaled),
