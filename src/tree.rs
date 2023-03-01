@@ -1,15 +1,14 @@
-use std::fmt::Display;
 use std::rc::{Rc, Weak};
 use std::cell::RefCell;
 
 #[derive(Debug)]
-pub struct TreeNode<T: Display> {
+pub struct TreeNode<T> {
     pub value: T,
     pub children: RefCell<Vec<Rc<TreeNode<T>>>>,
     pub parent: RefCell<Weak<TreeNode<T>>>
 }
 
-impl<T: Display> TreeNode<T> {
+impl<T> TreeNode<T> {
     pub fn new(
                 value: T,
                 children: RefCell<Vec<Rc<TreeNode<T>>>>
@@ -21,11 +20,17 @@ impl<T: Display> TreeNode<T> {
         }
     }
 
+    pub fn new_childless(value: T) -> Self {
+        TreeNode {
+            value,
+            children: RefCell::new(vec![]),
+            parent: RefCell::new(Weak::new()),
+        }
+    }
+
     pub fn level(&self) -> usize {
-        println!("I have value {:}", self.value);
         match self.parent.borrow().upgrade() {
             Some(parent) => {
-                println!("My parent has value {:}", parent.value);
                 1 + parent.level()
             },
             None => 0
@@ -33,7 +38,7 @@ impl<T: Display> TreeNode<T> {
     }
 }
 
-pub fn add_child<T: Display>(parent: &Rc<TreeNode<T>>, child: &Rc<TreeNode<T>>) -> () {
+pub fn add_child<T>(parent: &Rc<TreeNode<T>>, child: &Rc<TreeNode<T>>) -> () {
     parent.children.borrow_mut().push(Rc::clone(child));
     *child.parent.borrow_mut() = Rc::downgrade(parent);
 }
