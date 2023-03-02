@@ -16,4 +16,5 @@ Rust port of SetVision project
   - [x] Closing on that image with a structuring element: https://github.com/LoyVanBeek/SetVision/blob/master/SetVision/Vision/ContourAnalyzer.cs#L65
   - [x] Then contour finding
   - [ ] Filter the contours to determine their shape
+  - [ ] Determine colors, or at least do some clustering to find 3 different colors.
   - [ ] etc.

@@ -125,6 +125,24 @@ fn main() {
                 }
             }
         }
+
+        for contour_node in contour_mapping.values() {
+            if contour_node.level() == 1 {
+                // These are likely already the card outlines, but better be sure:
+                // Does it have 1 to 3 children?
+                let child_count = contour_node.children.borrow().len();
+                if child_count >= 1 && child_count <= 3 {
+                    let epsilon = 30.0;
+                    let points = imageproc::geometry::approximate_polygon_dp(contour_node.value.points.as_slice(), epsilon, true);
+
+                    println!("Card candidate has approx. polygon of {} points (using eps. {})", points.len(), epsilon);
+                    if points.len() == 4 {
+                        imageproc::drawing::draw_polygon_mut(&mut contour_img, points.as_slice(), colors[0]);
+                    }
+                    // imageproc::drawing::draw_polygon_mut(&mut contour_img, contour_node.value.points.as_slice(), colors[0]);
+                }
+            }
+        }
         
         display_multiple_images("", &vec![
             &img,
